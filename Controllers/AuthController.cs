@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YouthProtection.Models;
 using YouthProtection.Models.Dtos;
 using YouthProtectionApi.UseCases;
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YouthProtection.Models;
-using YouthProtection.Models.Dtos;
 using YouthProtectionApi.DataBase;
 
 namespace YouthProtectionApi.Repositories
@@ -24,12 +23,10 @@ namespace YouthProtectionApi.Repositories
 
         public async Task<bool> FindByEmail(string email)
         {
-            if (await _context.TB_USER.AnyAsync(x => x.Email.ToLower() == email.ToLower()))
-            {
-                return true;
-            } 
+            var verificationEmail = await _context.TB_USER.AnyAsync(x => x.Email.ToLower() == email.ToLower());
 
-            return false;
+            return verificationEmail;
+
         }
 
         public async Task AddNewUser(UserModel userModel)

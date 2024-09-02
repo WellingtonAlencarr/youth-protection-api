@@ -1,4 +1,5 @@
-﻿using YouthProtection.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using YouthProtection.Models;
 using YouthProtection.Models.Dtos;
 using YouthProtection.Services;
 using YouthProtectionApi.Exceptions;
@@ -24,10 +25,10 @@ namespace YouthProtectionApi.UseCases
 
         public async Task<GenericExceptions> RegisterUser(UserModelDto userModelDto)
         {
-            var verificationEmail = await _userService.ExistentUser(userModelDto.Email);
-            if (verificationEmail != false)
+            var emailExists = await _userService.ExistentUser(userModelDto.Email);
+            if (emailExists != false)
             {
-                throw new InvalidOperationException("Email já está em uso");
+                return new GenericExceptions { Message = "Email já está em uso"};
             }
             
             var passwordHash = _authService.HashPassword(userModelDto.Password);
@@ -37,10 +38,12 @@ namespace YouthProtectionApi.UseCases
                 PasswordHash = passwordHash
             };
             
-            var userAdded = await _userService.RegisterUser(userModel);
-            return new GenericExceptions 
+            var result = await _userService.RegisterUser(userModel);
+
+            return new GenericExceptions
             {
-                Success = true
+                Success = true,
+                Message = "Usuário Criado com sucesso!"
             };
         }
     }

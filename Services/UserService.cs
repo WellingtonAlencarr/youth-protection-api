@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using YouthProtection.Models;
+﻿using YouthProtection.Models;
 using YouthProtectionApi.Exceptions;
 using YouthProtectionApi.Repositories;
 
@@ -19,14 +18,16 @@ namespace YouthProtectionApi.Services
             return await _userRepository.FindByEmail(email); ;
         }
 
-        public async Task<GenericExceptions> RegisterUser(UserModel userModel)
+        public async Task<UserModel> RegisterUser(UserModel userModel)
         {
 
            await _userRepository.AddNewUser(userModel);
 
-            return new GenericExceptions
+            return new UserModel
             {
-                Success = true,
+                Id = userModel.Id,
+                Email = userModel.Email,
+                PasswordHash = userModel.PasswordHash
             };
         }
     }

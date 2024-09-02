@@ -13,6 +13,8 @@ namespace YouthProtectionApi.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UserModel>().ToTable("TB_USER");
         }
 

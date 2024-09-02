@@ -11,8 +11,8 @@ using YouthProtectionApi.DataBase;
 namespace YouthProtectionApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240828014837_InicitalCreate")]
-    partial class InicitalCreate
+    [Migration("20240902022605_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,13 @@ namespace YouthProtectionApi.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
 
                     b.HasKey("Id");
 
