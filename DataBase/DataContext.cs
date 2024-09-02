@@ -10,7 +10,7 @@ namespace YouthProtectionApi.DataBase
         { }
 
         public DbSet<UserModel> TB_USER { get; set; }
-
+           
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

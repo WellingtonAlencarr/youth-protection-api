@@ -12,39 +12,51 @@ namespace YouthProtectionApi.UseCases
     {
         private readonly AuthService _authService;
         private readonly IUserRepository _userRepository;
-        private readonly IConfiguration _configuration;
         private readonly UserService _userService;
 
-        public RegisterUserUseCase(AuthService authService, IUserRepository userRepository, IConfiguration configuration, UserService userService) 
+        public RegisterUserUseCase(AuthService authService, IUserRepository userRepository, UserService userService) 
         {
             _authService = authService;
             _userRepository = userRepository;
-            _configuration = configuration;
             _userService = userService;
         }
 
-        public async Task<GenericExceptions> RegisterUser(UserModelDto userModelDto)
+        public async Task<RegisterUserException> RegisterUser(UserModelDto userModelDto)
         {
-            var emailExists = await _userService.ExistentUser(userModelDto.Email);
-            if (emailExists != false)
-            {
-                return new GenericExceptions { Message = "Email já está em uso"};
-            }
+            try { 
+                var emailExists = await _userService.ExistentUser(userModelDto.Email);
+                if (emailExists)
+                {
+                    return new RegisterUserException
+                    {
+                        Success = false,
+                        ErrorMessage = "Email já utilizado"
+                    };
+                }
             
-            var passwordHash = _authService.HashPassword(userModelDto.Password);
-            var userModel = new UserModel
-            {
-                Email = userModelDto.Email,
-                PasswordHash = passwordHash
-            };
+                var passwordHash = _authService.HashPassword(userModelDto.Password);
+                var userModel = new UserModel
+                {
+                    Email = userModelDto.Email,
+                    PasswordHash = passwordHash
+                };
             
-            var result = await _userService.RegisterUser(userModel);
+                var result = await _userService.RegisterUser(userModel);
 
-            return new GenericExceptions
+                return new RegisterUserException
+                {
+                    Success = true,
+                    User = userModel
+                };
+            }
+            catch (Exception ex)
             {
-                Success = true,
-                Message = "Usuário Criado com sucesso!"
-            };
+                return new RegisterUserException
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
     }
 }

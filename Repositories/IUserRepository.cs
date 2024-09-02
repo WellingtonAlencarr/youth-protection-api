@@ -13,20 +13,20 @@ namespace YouthProtectionApi.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly DataContext _context;
-        private readonly IConfiguration _configuration;
 
-        public UserRepository(DataContext context, IConfiguration configuration)
+        public UserRepository(DataContext context)
         {
-            _context = context;
-            _configuration = configuration;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<bool> FindByEmail(string email)
         {
-            var verificationEmail = await _context.TB_USER.AnyAsync(x => x.Email.ToLower() == email.ToLower());
+            if (_context == null)
+            {
+                throw new InvalidOperationException("O DataContext não foi inicializado.");
+            }
 
-            return verificationEmail;
-
+            return await _context.TB_USER.AnyAsync(x => x.Email.ToLower() == email.ToLower());
         }
 
         public async Task AddNewUser(UserModel userModel)
