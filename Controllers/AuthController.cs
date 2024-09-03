@@ -18,19 +18,19 @@ namespace YouthProtection.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register(UserModelDto userModelDto)
+        public async Task<IActionResult> Register(UserModelDto userModelDto)
         {
-            var registeredUser = _registerUserUseCase.RegisterUser(userModelDto);
-            return Ok(registeredUser);
+            var registerResult = await _registerUserUseCase.RegisterUser(userModelDto);
+            return Ok(registerResult);
         }
         
         [HttpPost("Login")]
-        public IActionResult Login(UserModelDto userModelDto)
+        public async Task<IActionResult> Login(UserModelDto userModelDto)
         {
             try
             {
-                var userModel = _loginUserUseCase.ExecuteLogin(userModelDto);
-                return Ok(userModel);
+                var loginResult = await _loginUserUseCase.ExecuteLogin(userModelDto);
+                return Ok(loginResult);
             }
             catch (UnauthorizedAccessException ex)
             { 

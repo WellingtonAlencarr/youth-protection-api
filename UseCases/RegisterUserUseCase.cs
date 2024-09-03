@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using YouthProtection.Models;
+﻿using YouthProtection.Models;
 using YouthProtection.Models.Dtos;
 using YouthProtection.Services;
 using YouthProtectionApi.Exceptions;
-using YouthProtectionApi.Repositories;
 using YouthProtectionApi.Services;
 
 namespace YouthProtectionApi.UseCases
@@ -11,13 +9,11 @@ namespace YouthProtectionApi.UseCases
     public class RegisterUserUseCase
     {
         private readonly AuthService _authService;
-        private readonly IUserRepository _userRepository;
         private readonly UserService _userService;
 
-        public RegisterUserUseCase(AuthService authService, IUserRepository userRepository, UserService userService) 
+        public RegisterUserUseCase(AuthService authService, UserService userService) 
         {
             _authService = authService;
-            _userRepository = userRepository;
             _userService = userService;
         }
 
@@ -41,7 +37,7 @@ namespace YouthProtectionApi.UseCases
                     PasswordHash = passwordHash
                 };
             
-                var result = await _userService.RegisterUser(userModel);
+                var result = await _userService.RegisterNewUser(userModel);
 
                 return new RegisterUserException
                 {

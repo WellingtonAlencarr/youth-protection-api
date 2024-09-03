@@ -1,4 +1,7 @@
-﻿using YouthProtection.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using YouthProtection.Models;
+using YouthProtection.Models.Dtos;
+using YouthProtection.Services;
 using YouthProtectionApi.Exceptions;
 using YouthProtectionApi.Repositories;
 
@@ -7,10 +10,13 @@ namespace YouthProtectionApi.Services
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly AuthService _authService;
 
-        public UserService(IUserRepository userRepository)
+
+        public UserService(IUserRepository userRepository, AuthService authService)
         {
             _userRepository = userRepository;
+            _authService = authService;
         }
 
         public async Task<bool> ExistentUser(string email)
@@ -18,17 +24,38 @@ namespace YouthProtectionApi.Services
             return await _userRepository.FindByEmail(email); ;
         }
 
-        public async Task<UserModel> RegisterUser(UserModel userModel)
+        public async Task<RegisterUserException> RegisterNewUser(UserModel userModel)
         {
 
            await _userRepository.AddNewUser(userModel);
 
-            return new UserModel
+            return new RegisterUserException
             {
-                Id = userModel.Id,
-                Email = userModel.Email,
-                PasswordHash = userModel.PasswordHash
+                Success = true,
+                User = userModel
             };
         }
+
+        public async Task<UserModelDto> LoginAttempt(UserModelDto userModelDto)
+        {
+            var user = await _userRepository.AuthenticationUser(userModelDto.Email);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Usuário ou senha inválido.");
+            }
+
+            var isPasswordValid = _authService.VerifyPassword(userModelDto.Password, user.PasswordHash);
+            if (!isPasswordValid)
+            {
+                throw new UnauthorizedAccessException("Usuário ou senha inválido.");
+            }
+
+            return new UserModelDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = null
+            };
+        }   
     }
 }
