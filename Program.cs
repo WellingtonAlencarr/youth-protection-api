@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("LocalHost")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalHost")));
 
 var app = builder.Build();
 

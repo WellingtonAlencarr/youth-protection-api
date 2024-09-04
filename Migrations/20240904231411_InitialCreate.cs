@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -16,9 +15,9 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Email = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PasswordHash = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    PasswordHash = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
