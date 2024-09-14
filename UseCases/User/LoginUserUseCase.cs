@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.Win32;
-using YouthProtection.Models;
-using YouthProtection.Models.Dtos;
+﻿using YouthProtection.Models.Dtos;
 using YouthProtection.Services;
-using YouthProtectionApi.Repositories;
 using YouthProtectionApi.Services;
 
-namespace YouthProtectionApi.UseCases
+namespace YouthProtectionApi.UseCases.User
 {
     public class LoginUserUseCase
     {

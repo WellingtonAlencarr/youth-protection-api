@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using YouthProtection.Models;
 using YouthProtection.Models.Dtos;
-using YouthProtectionApi.UseCases;
+using YouthProtectionApi.UseCases.User;
 
 namespace YouthProtection.Controllers
 {
@@ -36,7 +39,19 @@ namespace YouthProtection.Controllers
             { 
                 return BadRequest(ex.Message);
             }
-            
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpGet("data")]
+        public IActionResult GetProtectedData()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(userId == null)
+            {
+                return Unauthorized("Token inválido ou expirado");
+            }
+
+            return Ok($"Dados Protegidos e acessados pelo usuário {userId}");
         }
     }
 }

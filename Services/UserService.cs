@@ -50,10 +50,13 @@ namespace YouthProtectionApi.Services
                 throw new UnauthorizedAccessException("Usuário ou senha inválido.");
             }
 
+            var token = _authService.CreateToken(user);
+
             return new UserModelDto
             {
-                Id = user.Id,
                 Email = user.Email,
+                Role = user.Role,
+                Token = token,
                 Password = null
             };
         }   

@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace YouthProtectionApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,14 @@ namespace YouthProtectionApi.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FictionalName = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
                     Email = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PasswordHash = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false)
+                    PasswordHash = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    CellPhone = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    BirthDate = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    uf = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    city = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using YouthProtection.Models;
 using YouthProtectionApi.DataBase;
 
@@ -18,24 +17,17 @@ namespace YouthProtectionApi.Repositories
 
         public UserRepository(DataContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
         }
 
         public async Task<bool> FindByEmail(string email)
         {
-            if (_context == null)
-            {
-                throw new InvalidOperationException("O DataContext não foi inicializado.");
-            }
 
             return await _context.TB_USER.AnyAsync(x => x.Email.ToLower() == email.ToLower());
         }
+
         public async Task<UserModel> AuthenticationUser(string email)
         {
-            if (_context == null)
-            {
-                throw new InvalidOperationException("O DataContext não foi inicializado.");
-            }
 
             var user = await _context.TB_USER
                 .Where(x => x.Email.ToLower() == email.ToLower())
@@ -43,7 +35,8 @@ namespace YouthProtectionApi.Repositories
                 {
                     Id = x.Id,
                     Email = x.Email,
-                    PasswordHash = x.PasswordHash
+                    PasswordHash = x.PasswordHash,
+                    Role = x.Role
                 })
                 .FirstOrDefaultAsync();
             

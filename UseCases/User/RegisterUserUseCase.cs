@@ -4,14 +4,14 @@ using YouthProtection.Services;
 using YouthProtectionApi.Exceptions;
 using YouthProtectionApi.Services;
 
-namespace YouthProtectionApi.UseCases
+namespace YouthProtectionApi.UseCases.User
 {
     public class RegisterUserUseCase
     {
         private readonly AuthService _authService;
         private readonly UserService _userService;
 
-        public RegisterUserUseCase(AuthService authService, UserService userService) 
+        public RegisterUserUseCase(AuthService authService, UserService userService)
         {
             _authService = authService;
             _userService = userService;
@@ -19,7 +19,8 @@ namespace YouthProtectionApi.UseCases
 
         public async Task<RegisterUserException> RegisterUser(UserModelDto userModelDto)
         {
-            try { 
+            try
+            {
                 var emailExists = await _userService.ExistentUser(userModelDto.Email);
                 if (emailExists)
                 {
@@ -29,14 +30,20 @@ namespace YouthProtectionApi.UseCases
                         ErrorMessage = "Email já utilizado"
                     };
                 }
-            
+
                 var passwordHash = _authService.HashPassword(userModelDto.Password);
                 var userModel = new UserModel
                 {
+                    FictionalName = userModelDto.FictionalName,
                     Email = userModelDto.Email,
-                    PasswordHash = passwordHash
+                    PasswordHash = passwordHash,
+                    CellPhone = userModelDto.CellPhone,
+                    BirthDate = userModelDto.BirthDate,
+                    uf = userModelDto.uf,
+                    city = userModelDto.city,
+                    Role = userModelDto.Role
                 };
-            
+
                 var result = await _userService.RegisterNewUser(userModel);
 
                 return new RegisterUserException

@@ -11,8 +11,8 @@ using YouthProtectionApi.DataBase;
 namespace YouthProtectionApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240902022605_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240913185143_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,12 +32,40 @@ namespace YouthProtectionApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("BirthDate")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
+                    b.Property<string>("CellPhone")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("Varchar");
 
+                    b.Property<string>("FictionalName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("city")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
+                    b.Property<string>("uf")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("Varchar");
