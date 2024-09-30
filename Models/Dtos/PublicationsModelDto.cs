@@ -1,17 +1,16 @@
-﻿using YouthProtectionApi.Models.Enums;
+﻿using YouthProtection.Models;
+using YouthProtectionApi.Models.Enums;
 
-namespace YouthProtection.Models
+namespace YouthProtectionApi.Models.Dtos
 {
-    public class PublicationsModel
+    public class PublicationsModelDto
     {
-        public long PublicationId {  get; set; }
-        public long UserId {  get; set; }
+        public long PublicationId { get; set; }
         public string PublicationContent { get; set; } = string.Empty;
         public PublicationRole PublicationsRole { get; set; }
         public PublicationStatus PublicationStatus { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime ModificationDate { get; set; } = DateTime.Now;
 
-        public UserModel UserModel {  get; set; }
     }
 }

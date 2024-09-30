@@ -33,7 +33,7 @@ namespace YouthProtection.Services
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, userModel.Email),
-                new Claim(ClaimTypes.NameIdentifier, userModel.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userModel.UserId.ToString()),
                 new Claim(ClaimTypes.Role, userModel.Role.ToString())
             };
 

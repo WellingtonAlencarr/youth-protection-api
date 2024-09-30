@@ -39,8 +39,8 @@ namespace YouthProtectionApi.UseCases.User
                     PasswordHash = passwordHash,
                     CellPhone = userModelDto.CellPhone,
                     BirthDate = userModelDto.BirthDate,
-                    uf = userModelDto.uf,
-                    city = userModelDto.city,
+                    Uf = userModelDto.Uf,
+                    City = userModelDto.City,
                     Role = userModelDto.Role
                 };
 

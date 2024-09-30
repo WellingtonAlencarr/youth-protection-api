@@ -33,10 +33,11 @@ namespace YouthProtectionApi.Repositories
                 .Where(x => x.Email.ToLower() == email.ToLower())
                 .Select(x => new UserModel
                 {
-                    Id = x.Id,
+                    UserId = x.UserId,
                     Email = x.Email,
                     PasswordHash = x.PasswordHash,
-                    Role = x.Role
+                    Role = x.Role,
+                    UserStatus = x.UserStatus
                 })
                 .FirstOrDefaultAsync();
             

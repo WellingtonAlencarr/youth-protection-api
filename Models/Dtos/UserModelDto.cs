@@ -9,9 +9,9 @@ namespace YouthProtection.Models.Dtos
         public required string Email { get; set; }
         public required string Password { get; set; }
         public string CellPhone { get; set; } = string.Empty;
-        public DateTime BirthDate { get; set; }
-        public string uf { get; set; } = string.Empty;
-        public string city { get; set; } = string.Empty;
+        public string BirthDate { get; set; }
+        public string Uf { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public string? Token { get; set; }
     }

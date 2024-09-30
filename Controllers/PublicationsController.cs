@@ -1,43 +1,71 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using YouthProtection.Models;
+using System.Security.Claims;
+using YouthProtectionApi.Models.Dtos;
+using YouthProtectionApi.Services;
 
 namespace YouthProtectionApi.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class PublicationsController : Controller
+    public class PublicationsController : ControllerBase
     {
+
+        private readonly PublicationService _publicationService;
         
-        public PublicationsController() { }
+        public PublicationsController(PublicationService publicationService) 
+        {
+            _publicationService = publicationService;
+        }
 
         [HttpGet("GetAll")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
-            var posts = "Await _postUseCase.???";
-            return Ok(posts);
+            var publications = await _publicationService.GetAllPublications();
+
+            return Ok(publications);
         }
 
 
 
         [HttpGet("GetAllByUserId/{userId}")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> GetAllByUserId(int userId)
+        public async Task<IActionResult> GetAllByUserId(long userId, int pageNumber = 1, int pageSize = 10)
         {
-            var posts = "await _postUseCase.???";
+            var identification = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
 
-            return Ok(posts);
+            var paginatedResult = await _publicationService.GetAllPublicationsByUserId(userId, pageNumber, pageSize);
+
+            return Ok(paginatedResult);
         }
 
-        [HttpPost("CreatePubli")]
+        [HttpPost("CreatePublication")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> CreatePost(PublicationsModel publicationsModel)
+        public async Task<IActionResult> CreatePublication(PublicationsModelDto publicationsModelDto)
         {
-            var registerResultPubli = "djsiadjias";
+            var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+            var publication = await _publicationService.CreatePublication(userId, publicationsModelDto.PublicationContent, publicationsModelDto.PublicationsRole, publicationsModelDto.PublicationStatus);
+            
+            return Ok("Publicação criada com sucesso.");
+        }
 
-            return Ok(registerResultPubli);
+        [HttpDelete("publication/{publicationiD}")]
+        public async Task<IActionResult> DeletePublication(long publicationiD)
+        {
+            try
+            {
+                var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+
+                await _publicationService.DeletePublication(publicationiD, userId);
+
+                return Ok("Publicação Inativada com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }
