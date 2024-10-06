@@ -27,7 +27,7 @@ namespace YouthProtectionApi.UseCases.User
                     return new RegisterUserException
                     {
                         Success = false,
-                        ErrorMessage = "Email já utilizado"
+                        ErrorMessage = "Houve um erro de requisição, tente novamente."
                     };
                 }
 

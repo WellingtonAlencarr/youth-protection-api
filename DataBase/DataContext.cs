@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YouthProtection.Models;
+using YouthProtectionApi.Models.Enums;
 
 namespace YouthProtectionApi.DataBase
 {
@@ -20,13 +21,42 @@ namespace YouthProtectionApi.DataBase
             modelBuilder.Entity<PublicationsModel>().ToTable("TB_PUBLICATION");
 
             modelBuilder.Entity<UserModel>()
+                .HasKey(e => e.UserId);
+
+            modelBuilder.Entity<UserModel>()
                 .HasMany(e => e.Publications)
                 .WithOne(e => e.UserModel)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired(false);
 
-            modelBuilder.Entity<UserModel>().Property(u => u.Role).HasDefaultValue("User");
-            modelBuilder.Entity<PublicationsModel>().Property(u => u.PublicationsRole).HasDefaultValue("Privado");
+            modelBuilder.Entity<PublicationsModel>()
+                .HasKey(e => e.PublicationId);
+
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.CreatedAt)
+                .HasConversion(
+                    e => e.ToUniversalTime(),
+                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.ModificationDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.ModificationDate)
+                .HasConversion(
+                    e => e.ToUniversalTime(),
+                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+
+            modelBuilder.Entity<UserModel>().Property(u => u.Role).HasConversion<string>();
+            modelBuilder.Entity<UserModel>().Property(u => u.UserStatus).HasConversion<string>();
+            modelBuilder.Entity<PublicationsModel>().Property(u => u.PublicationsRole).HasConversion<string>();
+            modelBuilder.Entity<PublicationsModel>().Property(u => u.PublicationStatus).HasConversion<string>();
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

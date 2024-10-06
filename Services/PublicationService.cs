@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.OpenApi.Models;
+﻿using System.Security.Claims;
 using YouthProtection.Models;
-using YouthProtectionApi.Models.Dtos;
 using YouthProtectionApi.Models.Enums;
 using YouthProtectionApi.Repositories;
 
@@ -10,25 +8,32 @@ namespace YouthProtectionApi.Services
     public class PublicationService
     {
         private readonly IPublicationRepository _publicationRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PublicationService(IPublicationRepository publicationRepository)
+        public PublicationService(IPublicationRepository publicationRepository, IHttpContextAccessor httpContextAccessor)
         {
             _publicationRepository = publicationRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<PaginatedPublicationsDto> GetAllPublications(int pageNumber, int pageSize)
+        public async Task<List<PublicationsModel>> GetAllPublications(int pageNumber, int pageSize)
         {
             var publications = await _publicationRepository.GetAllPublications(pageNumber, pageSize);
-
             return publications;
         }
 
-        public async Task<PaginatedPublicationsDto> GetAllPublicationByUser(long userId, int pageNumber, int pageSize)
+        public async Task<List<PublicationsModel>> GetAllPublicationByUser(int pageNumber, int pageSize)
         {
-            var publications = await _publicationRepository.GetAllPublicationsByUser(userId, pageNumber, pageSize);
+            var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
+            if (userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("Houve um erro na requisição.");
+            }
 
-            return publications;
+            var userId = long.Parse(userIdClaim.Value);
+
+            return await _publicationRepository.GetAllPublicationsByUser(userId, pageNumber, pageSize);
         }
 
         public async Task<PublicationsModel> CreatePublication(long userId, string content, PublicationRole role, PublicationStatus status)

@@ -13,32 +13,28 @@ namespace YouthProtectionApi.Controllers
     {
 
         private readonly PublicationService _publicationService;
-        
-        public PublicationsController(PublicationService publicationService) 
+
+        public PublicationsController(PublicationService publicationService)
         {
             _publicationService = publicationService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("publications")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPublications([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var publications = await _publicationService.GetAllPublications();
-
+            var publications = await _publicationService.GetAllPublications(pageNumber, pageSize);
             return Ok(publications);
         }
 
 
 
-        [HttpGet("GetAllByUserId/{userId}")]
+        [HttpGet("publications/user")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> GetAllByUserId(long userId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllPublicationsByUserId([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var identification = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
-
-            var paginatedResult = await _publicationService.GetAllPublicationsByUserId(userId, pageNumber, pageSize);
-
-            return Ok(paginatedResult);
+            var publications = await _publicationService.GetAllPublicationByUser(pageNumber, pageSize);
+            return Ok(publications);
         }
 
         [HttpPost("CreatePublication")]
@@ -60,7 +56,7 @@ namespace YouthProtectionApi.Controllers
 
                 await _publicationService.DeletePublication(publicationiD, userId);
 
-                return Ok("Publicação Inativada com sucesso.");
+                return Ok("Publicação excluída com sucesso.");
             }
             catch (Exception ex)
             {

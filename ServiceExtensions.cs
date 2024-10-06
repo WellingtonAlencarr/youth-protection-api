@@ -21,6 +21,11 @@ namespace YouthProtectionApi
             services.AddScoped<DataContext>();
             services.AddScoped<GenericExceptions>();
             services.AddScoped<UserService>();
+            services.AddScoped<PublicationService>();
+            services.AddScoped<IPublicationRepository, PublicationRepository>();
+            services.AddScoped<RegisterUserException>();
+            services.AddScoped<PublicationException>();
+            services.AddHttpContextAccessor();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

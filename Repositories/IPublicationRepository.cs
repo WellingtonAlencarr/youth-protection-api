@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using YouthProtection.Models;
 using YouthProtectionApi.DataBase;
 using YouthProtectionApi.Models.Enums;
@@ -28,48 +27,20 @@ namespace YouthProtectionApi.Repositories
         public async Task<List<PublicationsModel>> GetAllPublications(int pageNumber, int pageSize)
         {
 
-            var totalCount = await _context.TB_PUBLICATION
-                .CountAsync();
-
-            var publications = await _context.TB_PUBLICATION
+            return await _context.TB_PUBLICATION
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x => new PublicationsModel
-                {
-                    PublicationId = x.PublicationId,
-                    PublicationContent = x.PublicationContent,
-                    CreatedAt = x.CreatedAt,
-                    ModificationDate = x.ModificationDate,
-                    PublicationsRole = x.PublicationsRole,
-                    PublicationStatus = x.PublicationStatus
-                })
                 .ToListAsync();
-
-            return publications;
         }
 
         public async Task<List<PublicationsModel>> GetAllPublicationsByUser(long userId, int pageNumber, int pageSize)
         {
 
-            var totalCount = await _context.TB_PUBLICATION
-                .CountAsync(x => x.UserId == userId);
-
-            var publications = await _context.TB_PUBLICATION
+            return await _context.TB_PUBLICATION
                 .Where(x => x.UserId == userId)
                 .Skip((pageNumber - 1)* pageSize)
                 .Take(pageSize)
-                .Select(x => new PublicationsModel
-                {
-                    PublicationId = x.PublicationId,
-                    PublicationContent = x.PublicationContent,
-                    CreatedAt = x.CreatedAt,
-                    ModificationDate = x.ModificationDate,
-                    PublicationsRole = x.PublicationsRole,
-                    PublicationStatus = x.PublicationStatus
-                })
                 .ToListAsync();
-
-            return publications;
         }
 
         public async Task<PublicationsModel> GetPublicationById(long publicationId)

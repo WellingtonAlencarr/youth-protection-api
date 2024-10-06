@@ -41,13 +41,13 @@ namespace YouthProtectionApi.Services
             var user = await _userRepository.AuthenticationUser(userModelDto.Email);
             if (user == null)
             {
-                throw new UnauthorizedAccessException("Usuário ou senha inválido.");
+                throw new UnauthorizedAccessException("Houve um erro na requisição. Tente novamente");
             }
 
             var isPasswordValid = _authService.VerifyPassword(userModelDto.Password, user.PasswordHash);
             if (!isPasswordValid)
             {
-                throw new UnauthorizedAccessException("Usuário ou senha inválido.");
+                throw new UnauthorizedAccessException("Houve um erro na requisição. Tente novamente");
             }
 
             var token = _authService.CreateToken(user);
