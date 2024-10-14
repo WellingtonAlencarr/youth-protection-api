@@ -10,7 +10,7 @@ namespace YouthProtectionApi.Repositories
         Task<List<PublicationsModel>> GetAllPublicationsByUser(long userId, int pageNumber, int pageSize);
         Task<List<PublicationsModel>> GetAllPublications(int pageNumber, int pageSize);
         Task InactivePublication(PublicationsModel publicationsModel);
-        Task<PublicationsModel> UpdatePublication(long publicationId, string newContent, PublicationRole newRole);
+        Task<PublicationsModel> UpdatePublication(PublicationsModel publication);
         Task<PublicationsModel> CreatePublication(long userId, PublicationsModel publication);
         Task<PublicationsModel> GetPublicationById(long publicationId);
     }
@@ -55,20 +55,10 @@ namespace YouthProtectionApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PublicationsModel> UpdatePublication(long publicationId, string newContent, PublicationRole newRole)
+        public async Task<PublicationsModel> UpdatePublication(PublicationsModel publication)
         {
-            var publication = await _context.TB_PUBLICATION
-                .FirstOrDefaultAsync(x => x.PublicationId == publicationId);
 
-            if (publication == null)
-            {
-                throw new Exception("Publicação não encontrada.");
-            }
-
-            publication.PublicationContent = newContent;
-            publication.PublicationsRole = newRole;
-            publication.ModificationDate = DateTime.Now;
-
+            _context.TB_PUBLICATION.Update(publication);
             await _context.SaveChangesAsync();
 
             return publication;

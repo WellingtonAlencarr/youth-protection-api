@@ -1,5 +1,8 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using System.Security.Claims;
 using YouthProtection.Models;
+using YouthProtectionApi.Models.Dtos;
 using YouthProtectionApi.Models.Enums;
 using YouthProtectionApi.Repositories;
 
@@ -22,18 +25,51 @@ namespace YouthProtectionApi.Services
             return publications;
         }
 
-        public async Task<List<PublicationsModel>> GetAllPublicationByUser(int pageNumber, int pageSize)
+        public async Task<List<PublicationsModelDto>> GetAllPublicationByUser(int pageNumber, int pageSize)
         {
             var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
-                throw new UnauthorizedAccessException("Houve um erro na requisição.");
+                throw new UnauthorizedAccessException("Houve um erro na requisição, tente fazer login novamente.");
             }
 
             var userId = long.Parse(userIdClaim.Value);
 
-            return await _publicationRepository.GetAllPublicationsByUser(userId, pageNumber, pageSize);
+            var publications = await _publicationRepository.GetAllPublicationsByUser(userId, pageNumber, pageSize);
+
+            return publications.Select(p => new PublicationsModelDto
+            {
+                PublicationId = p.PublicationId,
+                PublicationContent = p.PublicationContent,
+                PublicationsRole = p.PublicationsRole,
+                PublicationStatus = p.PublicationStatus,
+                CreatedAt = p.CreatedAt,
+                ModificationDate = p.ModificationDate
+            }).ToList();
+
+        }
+
+        public async Task<PublicationsModel> UpdatePublication(long userId, long publicationId, string newContent, PublicationRole newRole)
+        {
+
+            var publication = await _publicationRepository.GetPublicationById(publicationId);
+
+            if(publication == null)
+            {
+                throw new Exception("Publicação não encontrada");
+            }
+
+            if(publication.UserId != userId)
+            {
+                throw new Exception("Você não tem permissão para atualizar esta publicação.");
+            }
+
+            publication.PublicationContent = newContent;
+            publication.PublicationsRole = newRole;
+            publication.ModificationDate = DateTime.UtcNow;
+
+            return await _publicationRepository.UpdatePublication(publication);
         }
 
         public async Task<PublicationsModel> CreatePublication(long userId, string content, PublicationRole role, PublicationStatus status)

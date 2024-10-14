@@ -47,6 +47,16 @@ namespace YouthProtectionApi.Controllers
             return Ok("Publicação criada com sucesso.");
         }
 
+        [HttpPost("publicationsUpdate/{publicationiD}")]
+        [Authorize(Roles = "Admin, User")]
+        public async Task<IActionResult> UpdatePublication(PublicationsModelDto publicationsModelDto)
+        {
+            var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
+            var publication = await _publicationService.UpdatePublication(userId ,publicationsModelDto.PublicationId, publicationsModelDto.PublicationContent, publicationsModelDto.PublicationsRole);
+
+            return Ok("Publicação atualizada com sucesso!");
+        }
+
         [HttpDelete("publication/{publicationiD}")]
         public async Task<IActionResult> DeletePublication(long publicationiD)
         {
