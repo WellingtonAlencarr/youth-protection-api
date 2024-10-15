@@ -27,8 +27,6 @@ namespace YouthProtectionApi.Controllers
             return Ok(publications);
         }
 
-
-
         [HttpGet("publications/user")]
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetAllPublicationsByUserId([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -52,7 +50,7 @@ namespace YouthProtectionApi.Controllers
         public async Task<IActionResult> UpdatePublication(PublicationsModelDto publicationsModelDto)
         {
             var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
-            var publication = await _publicationService.UpdatePublication(userId ,publicationsModelDto.PublicationId, publicationsModelDto.PublicationContent, publicationsModelDto.PublicationsRole);
+            var publication = await _publicationService.UpdatePublication(userId ,publicationsModelDto.PublicationId, publicationsModelDto.PublicationContent, publicationsModelDto.PublicationsRole, publicationsModelDto.PublicationStatus);
 
             return Ok("Publicação atualizada com sucesso!");
         }

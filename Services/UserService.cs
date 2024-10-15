@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using YouthProtection.Models;
 using YouthProtection.Models.Dtos;
 using YouthProtection.Services;
@@ -11,17 +12,98 @@ namespace YouthProtectionApi.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly AuthService _authService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public UserService(IUserRepository userRepository, AuthService authService)
+
+
+        public UserService(IUserRepository userRepository, AuthService authService, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _authService = authService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<bool> ExistentUser(string email)
         {
             return await _userRepository.FindByEmail(email); ;
+        }
+
+        public async Task<UserModelDto> GetByUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("Houve um erro na requisição, tente fazer login novamente.");
+            }
+
+            var userId = long.Parse(userIdClaim.Value);
+
+            var existingUser = await _userRepository.GetUserById(userId);
+            if (existingUser == null)
+            {
+                throw new UnauthorizedAccessException("Usuário não encontrado.");
+            }
+
+            return new UserModelDto
+            {
+                UserId = existingUser.UserId,
+                FictionalName = existingUser.FictionalName,
+                Email = existingUser.Email,
+                Password = null,
+                CellPhone = existingUser.CellPhone,
+                BirthDate = existingUser.BirthDate,
+                Uf = existingUser.Uf,
+                City = existingUser.City,
+                Role = existingUser.Role,
+            };
+        }
+
+        public async Task<UserModelDto> UpdateUser(UserModelDto userModelDto)
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+            
+            if (userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("Houve um erro na requisição, tente fazer login novamente.");
+            }
+
+            var userId = long.Parse(userIdClaim.Value);
+
+            var existingUser = await _userRepository.GetUserById(userId);
+            if (existingUser == null)
+            {
+                throw new UnauthorizedAccessException("Usuário não encontrado.");
+            }
+
+            if (!string.IsNullOrEmpty(userModelDto.Password))
+            {
+                existingUser.PasswordHash = _authService.HashPassword(userModelDto.Password);
+            }
+            if (!string.IsNullOrEmpty(userModelDto.CellPhone))
+            {
+                existingUser.CellPhone = userModelDto.CellPhone;
+            }
+            if (!string.IsNullOrEmpty(userModelDto.Uf))
+            {
+                existingUser.Uf = userModelDto.Uf;
+            }
+            if (!string.IsNullOrEmpty(userModelDto.City))
+            {
+                existingUser.City = userModelDto.City;
+            }
+
+            await _userRepository.UpdateUser(existingUser);
+
+            return new UserModelDto
+            {
+                CellPhone = existingUser.CellPhone,
+                Uf = existingUser.Uf,
+                City = existingUser.City,
+                Email = existingUser.Email,
+                Password = null
+            };
         }
 
         public async Task<RegisterUserException> RegisterNewUser(UserModel userModel)
@@ -55,6 +137,7 @@ namespace YouthProtectionApi.Services
             return new UserModelDto
             {
                 Email = user.Email,
+                FictionalName = user.FictionalName,
                 Role = user.Role,
                 Token = token,
                 Password = null

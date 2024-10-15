@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using YouthProtectionApi.Models.Enums;
+﻿using YouthProtectionApi.Models.Enums;
 
 namespace YouthProtection.Models
 {
@@ -10,7 +9,7 @@ namespace YouthProtection.Models
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string CellPhone { get; set; } = string.Empty;
-        public DateTime BirthDate { get; set; }
+        public string BirthDate { get; set; }
         public string Uf { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public UserRole Role { get; set; }

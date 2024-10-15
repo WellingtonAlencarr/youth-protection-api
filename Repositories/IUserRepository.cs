@@ -9,6 +9,9 @@ namespace YouthProtectionApi.Repositories
         Task<bool> FindByEmail(string email);
         public Task AddNewUser(UserModel userModel);
         public Task<UserModel> AuthenticationUser(string email);
+        public Task<UserModel> UpdateUser(UserModel userModel);
+        public Task<UserModel> GetUserById(long userId);
+
     }
 
     public class UserRepository : IUserRepository
@@ -42,6 +45,20 @@ namespace YouthProtectionApi.Repositories
                 .FirstOrDefaultAsync();
             
             return user;
+        }
+
+        public async Task<UserModel> GetUserById(long userId)
+        {
+            return await _context.TB_USER
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+        }
+
+        public async Task<UserModel> UpdateUser(UserModel userModel)
+        {
+            _context.TB_USER.Update(userModel);
+            await _context.SaveChangesAsync();
+
+            return userModel;
         }
 
         public async Task AddNewUser(UserModel userModel)

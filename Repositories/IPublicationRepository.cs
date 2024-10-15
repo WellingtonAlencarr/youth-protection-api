@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YouthProtection.Models;
 using YouthProtectionApi.DataBase;
-using YouthProtectionApi.Models.Enums;
 
 namespace YouthProtectionApi.Repositories
 {

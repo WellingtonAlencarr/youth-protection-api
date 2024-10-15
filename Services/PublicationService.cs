@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using YouthProtection.Models;
 using YouthProtectionApi.Models.Dtos;
 using YouthProtectionApi.Models.Enums;
@@ -47,10 +45,9 @@ namespace YouthProtectionApi.Services
                 CreatedAt = p.CreatedAt,
                 ModificationDate = p.ModificationDate
             }).ToList();
-
         }
 
-        public async Task<PublicationsModel> UpdatePublication(long userId, long publicationId, string newContent, PublicationRole newRole)
+        public async Task<PublicationsModel> UpdatePublication(long userId, long publicationId, string newContent, PublicationRole newRole, PublicationStatus newStatus)
         {
 
             var publication = await _publicationRepository.GetPublicationById(publicationId);
@@ -68,6 +65,7 @@ namespace YouthProtectionApi.Services
             publication.PublicationContent = newContent;
             publication.PublicationsRole = newRole;
             publication.ModificationDate = DateTime.UtcNow;
+            publication.PublicationStatus = newStatus;
 
             return await _publicationRepository.UpdatePublication(publication);
         }
