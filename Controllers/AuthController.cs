@@ -58,7 +58,7 @@ namespace YouthProtection.Controllers
         }
 
         [Authorize(Roles = "User, Admin, Voluntary")]
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<IActionResult> UpdateUser(UserModelDto userModelDto)
         {
             try

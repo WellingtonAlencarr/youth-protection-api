@@ -38,6 +38,11 @@ namespace YouthProtectionApi.Repositories
                 {
                     UserId = x.UserId,
                     Email = x.Email,
+                    FictionalName = x.FictionalName,
+                    Uf = x.Uf,
+                    City = x.City,
+                    CellPhone = x.CellPhone,
+                    BirthDate = x.BirthDate,
                     PasswordHash = x.PasswordHash,
                     Role = x.Role,
                     UserStatus = x.UserStatus

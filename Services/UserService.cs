@@ -93,11 +93,16 @@ namespace YouthProtectionApi.Services
             {
                 existingUser.City = userModelDto.City;
             }
+            if (!string.IsNullOrEmpty(userModelDto.FictionalName))
+            {
+                existingUser.FictionalName = userModelDto.FictionalName;
+            }
 
             await _userRepository.UpdateUser(existingUser);
 
             return new UserModelDto
             {
+                FictionalName = existingUser.FictionalName,
                 CellPhone = existingUser.CellPhone,
                 Uf = existingUser.Uf,
                 City = existingUser.City,
@@ -138,6 +143,9 @@ namespace YouthProtectionApi.Services
             {
                 Email = user.Email,
                 FictionalName = user.FictionalName,
+                BirthDate = user.BirthDate,
+                Uf = user.Uf,
+                City = user.City,
                 Role = user.Role,
                 Token = token,
                 Password = null
