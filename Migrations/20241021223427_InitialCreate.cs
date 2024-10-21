@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace YouthProtectionApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,16 +16,16 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FictionalName = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Email = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PasswordHash = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    CellPhone = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    BirthDate = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Uf = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    City = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    UserStatus = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FictionalName = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    PasswordHash = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    CellPhone = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    BirthDate = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Uf = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,13 +37,13 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     PublicationId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PublicationContent = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PublicationsRole = table.Column<string>(type: "text", nullable: false),
-                    PublicationStatus = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    ModificationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                    PublicationContent = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    PublicationsRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicationStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {

@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("LocalHost")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("HostSql")));
 
 var app = builder.Build();
 
