@@ -12,6 +12,7 @@ namespace YouthProtectionApi.DataBase
 
         public DbSet<UserModel> TB_USER { get; set; }
         public DbSet<PublicationsModel> TB_PUBLICATION { get; set; }
+        public DbSet<CommentsModel> TB_COMMENT { get; set; }
            
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,6 +20,7 @@ namespace YouthProtectionApi.DataBase
 
             modelBuilder.Entity<UserModel>().ToTable("TB_USER");
             modelBuilder.Entity<PublicationsModel>().ToTable("TB_PUBLICATION");
+            modelBuilder.Entity<CommentsModel>().ToTable("TB_COMMENT");
 
             modelBuilder.Entity<UserModel>()
                 .HasKey(e => e.UserId);
@@ -29,13 +31,28 @@ namespace YouthProtectionApi.DataBase
                 .HasForeignKey(e => e.UserId)
                 .IsRequired(false);
 
+            modelBuilder.Entity<UserModel>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.UserModel)
+                .HasForeignKey(e => e.idComment)
+                .IsRequired(false);
+
             modelBuilder.Entity<PublicationsModel>()
                 .HasKey(e => e.PublicationId);
 
-
             modelBuilder.Entity<PublicationsModel>()
                 .Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<PublicationsModel>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.PublicationsModel)
+                .HasForeignKey(e => e.idComment);
+            
+            modelBuilder.Entity<PublicationsModel>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.PublicationsModel)
+                .HasForeignKey(e => e.ResponseCommentId);
 
             modelBuilder.Entity<PublicationsModel>()
                 .Property(e => e.CreatedAt)
@@ -52,6 +69,17 @@ namespace YouthProtectionApi.DataBase
                 .HasConversion(
                     e => e.ToUniversalTime(),
                     e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+
+            modelBuilder.Entity<CommentsModel>()
+                .HasKey(e => e.idComment);
+
+            modelBuilder.Entity<CommentsModel>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion(
+                e => e.ToUniversalTime(),
+                e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+               
 
             modelBuilder.Entity<UserModel>().Property(u => u.Role).HasConversion<string>();
             modelBuilder.Entity<UserModel>().Property(u => u.UserStatus).HasConversion<string>();

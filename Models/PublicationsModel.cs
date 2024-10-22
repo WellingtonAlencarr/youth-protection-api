@@ -12,6 +12,7 @@ namespace YouthProtection.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime ModificationDate { get; set; } = DateTime.UtcNow;
 
+        public List<CommentsModel> Comments { get; set; } = new List<CommentsModel>();
         public UserModel UserModel {  get; set; }
     }
 }
