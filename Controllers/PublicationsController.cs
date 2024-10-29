@@ -55,14 +55,14 @@ namespace YouthProtectionApi.Controllers
             return Ok("Publicação atualizada com sucesso!");
         }
 
-        [HttpDelete("publication/{publicationiD}")]
-        public async Task<IActionResult> DeletePublication(long publicationiD)
+        [HttpDelete("publication/{publicationId}")]
+        public async Task<IActionResult> DeletePublication(long publicationId)
         {
             try
             {
                 var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException());
 
-                await _publicationService.DeletePublication(publicationiD, userId);
+                await _publicationService.DeletePublication(publicationId, userId);
 
                 return Ok("Publicação excluída com sucesso.");
             }

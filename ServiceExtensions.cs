@@ -7,6 +7,7 @@ using YouthProtectionApi.Exceptions;
 using YouthProtectionApi.Repositories;
 using YouthProtectionApi.Services;
 using YouthProtectionApi.UseCases.User;
+using YouthProtectionApi.WebSockets;
 
 namespace YouthProtectionApi
 {
@@ -25,7 +26,11 @@ namespace YouthProtectionApi
             services.AddScoped<IPublicationRepository, PublicationRepository>();
             services.AddScoped<RegisterUserException>();
             services.AddScoped<PublicationException>();
+            services.AddScoped<CommentService>();
+            services.AddScoped<ICommentRepository, CommentRepository>(); 
             services.AddHttpContextAccessor();
+            services.AddScoped<WebSocketHandler>();
+            services.AddSingleton<CommentSocketHandler>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -39,7 +44,34 @@ namespace YouthProtectionApi
                             ValidateLifetime = true,
                             ClockSkew = TimeSpan.Zero
                         };
-                 });   
+                 });
+
+        }
+
+        public class Startup
+        {
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebSocketHandler webSocketHandler)
+            {
+                app.UseWebSockets();
+
+                app.Use(async (context, next) =>
+                {
+                    if (context.Request.Path == "/ws")
+                    {
+                        await webSocketHandler.HandleWebSocketConnection(context);
+                    }
+                    else
+                    {
+                        await next();
+                    }
+                });
+
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
+            }
         }
     }
 }

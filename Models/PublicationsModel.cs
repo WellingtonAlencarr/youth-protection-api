@@ -6,6 +6,7 @@ namespace YouthProtection.Models
     {
         public long PublicationId {  get; set; }
         public long UserId {  get; set; }
+        public long idComment {  get; set; }
         public string PublicationContent { get; set; } = string.Empty;
         public PublicationRole PublicationsRole { get; set; }
         public PublicationStatus PublicationStatus { get; set; }

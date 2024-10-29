@@ -22,6 +22,35 @@ namespace YouthProtectionApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("YouthProtection.Models.CommentsModel", b =>
+                {
+                    b.Property<long>("CommentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("CommentStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContentComment")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("Varchar");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<long>("PublicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CommentId");
+
+                    b.ToTable("TB_COMMENT", (string)null);
+                });
+
             modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
                 {
                     b.Property<long>("PublicationId")
@@ -54,6 +83,9 @@ namespace YouthProtectionApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("idComment")
                         .HasColumnType("bigint");
 
                     b.HasKey("PublicationId");
@@ -119,6 +151,23 @@ namespace YouthProtectionApi.Migrations
                     b.ToTable("TB_USER", (string)null);
                 });
 
+            modelBuilder.Entity("YouthProtection.Models.CommentsModel", b =>
+                {
+                    b.HasOne("YouthProtection.Models.PublicationsModel", "PublicationsModel")
+                        .WithMany("Comments")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouthProtection.Models.UserModel", "UserModel")
+                        .WithMany("Comments")
+                        .HasForeignKey("CommentId");
+
+                    b.Navigation("PublicationsModel");
+
+                    b.Navigation("UserModel");
+                });
+
             modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
                 {
                     b.HasOne("YouthProtection.Models.UserModel", "UserModel")
@@ -128,8 +177,15 @@ namespace YouthProtectionApi.Migrations
                     b.Navigation("UserModel");
                 });
 
+            modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("YouthProtection.Models.UserModel", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Publications");
                 });
 #pragma warning restore 612, 618

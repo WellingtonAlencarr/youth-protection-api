@@ -34,7 +34,7 @@ namespace YouthProtectionApi.DataBase
             modelBuilder.Entity<UserModel>()
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.UserModel)
-                .HasForeignKey(e => e.idComment)
+                .HasForeignKey(e => e.CommentId)
                 .IsRequired(false);
 
             modelBuilder.Entity<PublicationsModel>()
@@ -47,12 +47,7 @@ namespace YouthProtectionApi.DataBase
             modelBuilder.Entity<PublicationsModel>()
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.PublicationsModel)
-                .HasForeignKey(e => e.idComment);
-            
-            modelBuilder.Entity<PublicationsModel>()
-                .HasMany(e => e.Comments)
-                .WithOne(e => e.PublicationsModel)
-                .HasForeignKey(e => e.ResponseCommentId);
+                .HasForeignKey(e => e.CommentId);
 
             modelBuilder.Entity<PublicationsModel>()
                 .Property(e => e.CreatedAt)
@@ -71,7 +66,7 @@ namespace YouthProtectionApi.DataBase
                     e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
 
             modelBuilder.Entity<CommentsModel>()
-                .HasKey(e => e.idComment);
+                .HasKey(e => e.CommentId);
 
             modelBuilder.Entity<CommentsModel>()
                 .Property(e => e.CreatedAt)
