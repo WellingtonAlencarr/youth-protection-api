@@ -64,12 +64,12 @@ namespace YouthProtectionApi.Services
 
             if (comment == null)
             {
-                throw new Exception("Publicação não encontrada");
+                throw new Exception("Mensagem não encontrada");
             }
 
             if (comment.PublicationId != publicationId)
             {
-                throw new Exception("Você não possui permissão para deletar essa publicação");
+                throw new Exception("Erro na requisição, tentar novamente mais tarde!");
             }
 
             comment.CommentStatus = CommentStatus.Inativo;

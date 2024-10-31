@@ -34,20 +34,21 @@ namespace YouthProtectionApi.DataBase
             modelBuilder.Entity<UserModel>()
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.UserModel)
-                .HasForeignKey(e => e.CommentId)
-                .IsRequired(false);
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
 
             modelBuilder.Entity<PublicationsModel>()
                 .HasKey(e => e.PublicationId);
 
             modelBuilder.Entity<PublicationsModel>()
-                .Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            modelBuilder.Entity<PublicationsModel>()
                 .HasMany(e => e.Comments)
                 .WithOne(e => e.PublicationsModel)
-                .HasForeignKey(e => e.CommentId);
+                .HasForeignKey(e => e.PublicationId)
+                .IsRequired();
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             modelBuilder.Entity<PublicationsModel>()
                 .Property(e => e.CreatedAt)

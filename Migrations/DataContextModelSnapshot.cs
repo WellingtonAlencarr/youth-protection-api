@@ -25,7 +25,10 @@ namespace YouthProtectionApi.Migrations
             modelBuilder.Entity("YouthProtection.Models.CommentsModel", b =>
                 {
                     b.Property<long>("CommentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CommentId"));
 
                     b.Property<int>("CommentStatus")
                         .HasColumnType("integer");
@@ -47,6 +50,10 @@ namespace YouthProtectionApi.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("CommentId");
+
+                    b.HasIndex("PublicationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TB_COMMENT", (string)null);
                 });
@@ -155,13 +162,15 @@ namespace YouthProtectionApi.Migrations
                 {
                     b.HasOne("YouthProtection.Models.PublicationsModel", "PublicationsModel")
                         .WithMany("Comments")
-                        .HasForeignKey("CommentId")
+                        .HasForeignKey("PublicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YouthProtection.Models.UserModel", "UserModel")
                         .WithMany("Comments")
-                        .HasForeignKey("CommentId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("PublicationsModel");
 

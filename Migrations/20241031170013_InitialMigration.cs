@@ -61,7 +61,8 @@ namespace YouthProtectionApi.Migrations
                 name: "TB_COMMENT",
                 columns: table => new
                 {
-                    CommentId = table.Column<long>(type: "bigint", nullable: false),
+                    CommentId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     PublicationId = table.Column<long>(type: "bigint", nullable: false),
                     ContentComment = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
@@ -72,17 +73,28 @@ namespace YouthProtectionApi.Migrations
                 {
                     table.PrimaryKey("PK_TB_COMMENT", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_TB_COMMENT_TB_PUBLICATION_CommentId",
-                        column: x => x.CommentId,
+                        name: "FK_TB_COMMENT_TB_PUBLICATION_PublicationId",
+                        column: x => x.PublicationId,
                         principalTable: "TB_PUBLICATION",
                         principalColumn: "PublicationId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TB_COMMENT_TB_USER_CommentId",
-                        column: x => x.CommentId,
+                        name: "FK_TB_COMMENT_TB_USER_UserId",
+                        column: x => x.UserId,
                         principalTable: "TB_USER",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TB_COMMENT_PublicationId",
+                table: "TB_COMMENT",
+                column: "PublicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TB_COMMENT_UserId",
+                table: "TB_COMMENT",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_PUBLICATION_UserId",
