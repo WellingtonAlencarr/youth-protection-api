@@ -12,7 +12,7 @@ using YouthProtectionApi.DataBase;
 namespace YouthProtectionApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241031170013_InitialMigration")]
+    [Migration("20241101033914_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -20,45 +20,42 @@ namespace YouthProtectionApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("YouthProtection.Models.CommentsModel", b =>
+            modelBuilder.Entity("YouthProtection.Models.MessageModel", b =>
                 {
-                    b.Property<long>("CommentId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CommentId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("CommentStatus")
-                        .HasColumnType("integer");
+                    b.Property<long>("ChatId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("ContentComment")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("Varchar");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<long>("SenderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("SentAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<long>("PublicationId")
-                        .HasColumnType("bigint");
+                    b.HasKey("Id");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.HasIndex("ChatId");
 
-                    b.HasKey("CommentId");
+                    b.HasIndex("SenderId");
 
-                    b.HasIndex("PublicationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TB_COMMENT", (string)null);
+                    b.ToTable("TB_MESSAGES", (string)null);
                 });
 
             modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
@@ -70,14 +67,10 @@ namespace YouthProtectionApi.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("PublicationId"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ModificationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PublicationContent")
                         .IsRequired()
@@ -93,9 +86,6 @@ namespace YouthProtectionApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("idComment")
                         .HasColumnType("bigint");
 
                     b.HasKey("PublicationId");
@@ -161,23 +151,70 @@ namespace YouthProtectionApi.Migrations
                     b.ToTable("TB_USER", (string)null);
                 });
 
-            modelBuilder.Entity("YouthProtection.Models.CommentsModel", b =>
+            modelBuilder.Entity("YouthProtectionApi.Models.AttendanceModel", b =>
                 {
-                    b.HasOne("YouthProtection.Models.PublicationsModel", "PublicationsModel")
-                        .WithMany("Comments")
-                        .HasForeignKey("PublicationId")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("PublicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("VolunteerId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublicationId");
+
+                    b.HasIndex("VolunteerId");
+
+                    b.ToTable("TB_ATTENDANCES", (string)null);
+                });
+
+            modelBuilder.Entity("YouthProtectionApi.Models.ChatModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AttendanceId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttendanceId");
+
+                    b.ToTable("TB_CHAT", (string)null);
+                });
+
+            modelBuilder.Entity("YouthProtection.Models.MessageModel", b =>
+                {
+                    b.HasOne("YouthProtectionApi.Models.ChatModel", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YouthProtection.Models.UserModel", "UserModel")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
+                    b.HasOne("YouthProtection.Models.UserModel", "Sender")
+                        .WithMany("Messages")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PublicationsModel");
+                    b.Navigation("Chat");
 
-                    b.Navigation("UserModel");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
@@ -189,16 +226,46 @@ namespace YouthProtectionApi.Migrations
                     b.Navigation("UserModel");
                 });
 
-            modelBuilder.Entity("YouthProtection.Models.PublicationsModel", b =>
+            modelBuilder.Entity("YouthProtectionApi.Models.AttendanceModel", b =>
                 {
-                    b.Navigation("Comments");
+                    b.HasOne("YouthProtection.Models.PublicationsModel", "Publication")
+                        .WithMany()
+                        .HasForeignKey("PublicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YouthProtection.Models.UserModel", "Volunteer")
+                        .WithMany()
+                        .HasForeignKey("VolunteerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Publication");
+
+                    b.Navigation("Volunteer");
+                });
+
+            modelBuilder.Entity("YouthProtectionApi.Models.ChatModel", b =>
+                {
+                    b.HasOne("YouthProtectionApi.Models.AttendanceModel", "Attendance")
+                        .WithMany()
+                        .HasForeignKey("AttendanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attendance");
                 });
 
             modelBuilder.Entity("YouthProtection.Models.UserModel", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Messages");
 
                     b.Navigation("Publications");
+                });
+
+            modelBuilder.Entity("YouthProtectionApi.Models.ChatModel", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
