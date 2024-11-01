@@ -26,11 +26,14 @@ namespace YouthProtectionApi
             services.AddScoped<IPublicationRepository, PublicationRepository>();
             services.AddScoped<RegisterUserException>();
             services.AddScoped<PublicationException>();
-            services.AddScoped<CommentService>();
-            services.AddScoped<ICommentRepository, CommentRepository>(); 
+            services.AddScoped<ChatService>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<AttendanceService>();
+            services.AddScoped<IAttendanceRepository, AttendanceRepository>(); 
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddHttpContextAccessor();
             services.AddScoped<WebSocketHandler>();
-            services.AddSingleton<CommentSocketHandler>();
+            services.AddSingleton<ChatSocketHandler>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

@@ -15,7 +15,8 @@ namespace YouthProtection.Models
         public UserRole Role { get; set; }
         public UserStatus UserStatus {  get; set; }
 
-        public List<CommentsModel> Comments { get; set; } = new List<CommentsModel>();
         public List<PublicationsModel> Publications { get; set; } = new List<PublicationsModel>();
+        public List<MessageModel> Messages { get; set; } = new List<MessageModel>();
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YouthProtection.Models;
+using YouthProtectionApi.Models;
 using YouthProtectionApi.Models.Enums;
 
 namespace YouthProtectionApi.DataBase
@@ -12,7 +13,10 @@ namespace YouthProtectionApi.DataBase
 
         public DbSet<UserModel> TB_USER { get; set; }
         public DbSet<PublicationsModel> TB_PUBLICATION { get; set; }
-        public DbSet<CommentsModel> TB_COMMENT { get; set; }
+        public DbSet<AttendanceModel> TB_ATTENDANCES { get; set; }
+        public DbSet<ChatModel> TB_CHAT { get; set; }
+        public DbSet<MessageModel> TB_MESSAGES { get; set; }
+
            
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,57 +24,75 @@ namespace YouthProtectionApi.DataBase
 
             modelBuilder.Entity<UserModel>().ToTable("TB_USER");
             modelBuilder.Entity<PublicationsModel>().ToTable("TB_PUBLICATION");
-            modelBuilder.Entity<CommentsModel>().ToTable("TB_COMMENT");
+            modelBuilder.Entity<AttendanceModel>().ToTable("TB_ATTENDANCES");
+            modelBuilder.Entity<ChatModel>().ToTable("TB_CHAT");
+            modelBuilder.Entity<MessageModel>().ToTable("TB_MESSAGES");
 
             modelBuilder.Entity<UserModel>()
                 .HasKey(e => e.UserId);
 
             modelBuilder.Entity<UserModel>()
-                .HasMany(e => e.Publications)
-                .WithOne(e => e.UserModel)
-                .HasForeignKey(e => e.UserId)
+                .HasMany(u => u.Publications)
+                .WithOne(p => p.UserModel)
+                .HasForeignKey(p => p.UserId)
                 .IsRequired(false);
 
             modelBuilder.Entity<UserModel>()
-                .HasMany(e => e.Comments)
-                .WithOne(e => e.UserModel)
-                .HasForeignKey(e => e.UserId)
+                .HasMany(u => u.Messages)
+                .WithOne(m => m.Sender)
+                .HasForeignKey(m => m.SenderId)
                 .IsRequired();
 
             modelBuilder.Entity<PublicationsModel>()
                 .HasKey(e => e.PublicationId);
 
             modelBuilder.Entity<PublicationsModel>()
-                .HasMany(e => e.Comments)
-                .WithOne(e => e.PublicationsModel)
-                .HasForeignKey(e => e.PublicationId)
+                .Property(e => e.CreatedAt)
+                .HasConversion(
+                    e => e.ToUniversalTime(),
+                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+
+            modelBuilder.Entity<PublicationsModel>()
+                .Property(e => e.ModificationDate)
+                .HasConversion(
+                    e => e.ToUniversalTime(),
+                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+
+            modelBuilder.Entity<AttendanceModel>()
+                .HasKey(e => e.Id);
+
+            modelBuilder.Entity<AttendanceModel>()
+                .HasOne(a => a.Volunteer)
+                .WithMany()
+                .HasForeignKey(a => a.VolunteerId)
                 .IsRequired();
 
-            modelBuilder.Entity<PublicationsModel>()
-                .Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            modelBuilder.Entity<AttendanceModel>()
+                .HasOne(a => a.Publication)
+                .WithMany()
+                .HasForeignKey(a => a.PublicationId)
+                .IsRequired();
 
-            modelBuilder.Entity<PublicationsModel>()
-                .Property(e => e.CreatedAt)
-                .HasConversion(
-                    e => e.ToUniversalTime(),
-                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+            modelBuilder.Entity<ChatModel>()
+                .HasKey(c => c.Id);
 
-            modelBuilder.Entity<PublicationsModel>()
-                .Property(e => e.ModificationDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            modelBuilder.Entity<ChatModel>()
+                .HasOne(c => c.Attendance)
+                .WithMany()
+                .HasForeignKey(c => c.AttendanceId)
+                .IsRequired();
 
-            modelBuilder.Entity<PublicationsModel>()
-                .Property(e => e.ModificationDate)
-                .HasConversion(
-                    e => e.ToUniversalTime(),
-                    e => DateTime.SpecifyKind(e, DateTimeKind.Utc));
+            modelBuilder.Entity<MessageModel>()
+                .HasKey(m => m.Id);
 
-            modelBuilder.Entity<CommentsModel>()
-                .HasKey(e => e.CommentId);
+            modelBuilder.Entity<MessageModel>()
+                .HasOne(m => m.Chat)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(m => m.ChatId)
+                 .IsRequired();
 
-            modelBuilder.Entity<CommentsModel>()
-                .Property(e => e.CreatedAt)
+            modelBuilder.Entity<MessageModel>()
+                .Property(e => e.SentAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasConversion(
                 e => e.ToUniversalTime(),
