@@ -12,8 +12,8 @@ using YouthProtectionApi.DataBase;
 namespace YouthProtectionApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241101033914_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241104003454_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using YouthProtection.Models;
+using YouthProtectionApi.Models.Dtos;
 using YouthProtectionApi.Services;
 
 namespace YouthProtectionApi.Controllers
@@ -16,13 +18,13 @@ namespace YouthProtectionApi.Controllers
         }
 
         [HttpPost("send")]
-        public async Task<IActionResult> SendMessage(long chatId, long senderId, string content)
+        public async Task<IActionResult> SendMessage(MessageResponseDTO messageModel)
         {
-            var message = await _chatService.SendMessage(chatId, senderId, content);
+            var message = await _chatService.SendMessage(messageModel.ChatId, messageModel.SenderId, messageModel.Content);
             return Ok(message);
         }
 
-        [HttpGet("messages")]
+        [HttpGet("messages/{chatId}")]
         public async Task<IActionResult> GetMessages(long chatId)
         {
             var messages = await _chatService.GetMessagesByChatId(chatId);
