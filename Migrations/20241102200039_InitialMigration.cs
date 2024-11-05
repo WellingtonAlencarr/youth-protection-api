@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -17,16 +16,16 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FictionalName = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Email = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PasswordHash = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    CellPhone = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    BirthDate = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Uf = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    City = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    UserStatus = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FictionalName = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    PasswordHash = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    CellPhone = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    BirthDate = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Uf = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,13 +37,13 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     PublicationId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PublicationContent = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    PublicationsRole = table.Column<string>(type: "text", nullable: false),
-                    PublicationStatus = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PublicationContent = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    PublicationsRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicationStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,11 +60,11 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     VolunteerId = table.Column<long>(type: "bigint", nullable: false),
                     PublicationId = table.Column<long>(type: "bigint", nullable: false),
-                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false)
+                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +88,7 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AttendanceId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -108,11 +107,11 @@ namespace YouthProtectionApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ChatId = table.Column<long>(type: "bigint", nullable: false),
                     SenderId = table.Column<long>(type: "bigint", nullable: false),
-                    Content = table.Column<string>(type: "Varchar", maxLength: 200, nullable: false),
-                    SentAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                    Content = table.Column<string>(type: "Varchar(200)", maxLength: 200, nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -121,14 +120,13 @@ namespace YouthProtectionApi.Migrations
                         name: "FK_TB_MESSAGES_TB_CHAT_ChatId",
                         column: x => x.ChatId,
                         principalTable: "TB_CHAT",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TB_MESSAGES_TB_USER_SenderId",
                         column: x => x.SenderId,
                         principalTable: "TB_USER",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

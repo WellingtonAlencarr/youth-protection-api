@@ -53,27 +53,17 @@ namespace YouthProtectionApi
 
         public class Startup
         {
-            public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebSocketHandler webSocketHandler)
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             {
-                app.UseWebSockets();
-
-                app.Use(async (context, next) =>
+                var webSocketOptions = new WebSocketOptions()
                 {
-                    if (context.Request.Path == "/ws")
-                    {
-                        await webSocketHandler.HandleWebSocketConnection(context);
-                    }
-                    else
-                    {
-                        await next();
-                    }
-                });
+                    KeepAliveInterval = TimeSpan.FromMinutes(2),
+                };
+                app.UseWebSockets(webSocketOptions);
+
+                app.UseMiddleware<WebSocketMiddleware>();
 
                 app.UseRouting();
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
             }
         }
     }

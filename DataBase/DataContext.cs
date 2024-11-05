@@ -41,6 +41,7 @@ namespace YouthProtectionApi.DataBase
                 .HasMany(u => u.Messages)
                 .WithOne(m => m.Sender)
                 .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             modelBuilder.Entity<PublicationsModel>()
@@ -89,7 +90,8 @@ namespace YouthProtectionApi.DataBase
                 .HasOne(m => m.Chat)
                 .WithMany(c => c.Messages)
                 .HasForeignKey(m => m.ChatId)
-                 .IsRequired();
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired();
 
             modelBuilder.Entity<MessageModel>()
                 .Property(e => e.SentAt)

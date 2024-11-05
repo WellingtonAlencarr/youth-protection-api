@@ -15,13 +15,14 @@ namespace YouthProtectionApi.WebSockets
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (!context.WebSockets.IsWebSocketRequest)
+            if (context.Request.Path == "/chat" && context.WebSockets.IsWebSocketRequest)
+            {
+                await _webSocketHandler.HandleWebSocketConnection(context);
+            }
+            else
             {
                 await _next(context);
-                return;
             }
-
-            await _webSocketHandler.HandleWebSocketConnection(context);
         }
     }
 }

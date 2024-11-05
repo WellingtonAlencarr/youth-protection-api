@@ -44,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("LocalHost")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Somee")));
 
 var app = builder.Build();
 
@@ -54,6 +54,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseWebSockets();
 app.UseMiddleware<WebSocketMiddleware>();
