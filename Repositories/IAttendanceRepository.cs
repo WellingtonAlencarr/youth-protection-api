@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using YouthProtection.Models;
 using YouthProtectionApi.DataBase;
 using YouthProtectionApi.Models;
@@ -9,6 +10,7 @@ namespace YouthProtectionApi.Repositories
     {
         Task<AttendanceModel> AddAttendance(AttendanceModel attendance);
         Task<AttendanceModel> GetAttendanceById(long id);
+        Task<AttendanceModel> GetAttendanceByPublicationId(long publicationId);
         Task UpdateAttendance(AttendanceModel attendance);
 
     }
@@ -32,6 +34,12 @@ namespace YouthProtectionApi.Repositories
         public async Task<AttendanceModel> GetAttendanceById(long id)
         {
             return await _context.TB_ATTENDANCES.FindAsync(id);
+        }
+
+        public async Task<AttendanceModel> GetAttendanceByPublicationId(long publicationId)
+        {
+            return await _context.TB_ATTENDANCES
+                .FirstOrDefaultAsync(a => a.PublicationId == publicationId);
         }
 
         public async Task UpdateAttendance(AttendanceModel attendance)

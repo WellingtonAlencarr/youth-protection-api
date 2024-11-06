@@ -1,4 +1,5 @@
-﻿using YouthProtectionApi.DataBase;
+﻿using Microsoft.EntityFrameworkCore;
+using YouthProtectionApi.DataBase;
 using YouthProtectionApi.Models;
 
 namespace YouthProtectionApi.Repositories
@@ -7,6 +8,7 @@ namespace YouthProtectionApi.Repositories
     public interface IChatRepository
     {
         Task<ChatModel> AddChat(ChatModel chat);
+        Task<ChatModel> GetChatByAttendanceId(long attendanceId);
     }
     public class ChatRepository : IChatRepository
     {
@@ -23,6 +25,12 @@ namespace YouthProtectionApi.Repositories
             _context.TB_CHAT.Add(chat);
             await _context.SaveChangesAsync();
             return chat;
+        }
+
+        public async Task<ChatModel> GetChatByAttendanceId(long attendanceId)
+        {
+            return await _context.TB_CHAT
+                .FirstOrDefaultAsync(c => c.AttendanceId == attendanceId);
         }
     }
 }

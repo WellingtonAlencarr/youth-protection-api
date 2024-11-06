@@ -20,7 +20,7 @@ namespace YouthProtectionApi.Controllers
         }
 
         [HttpGet("publications")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Voluntary")]
         public async Task<IActionResult> GetAllPublications([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var publications = await _publicationService.GetAllPublications(pageNumber, pageSize);

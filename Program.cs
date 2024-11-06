@@ -44,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Somee")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostGreeSql")));
 
 var app = builder.Build();
 

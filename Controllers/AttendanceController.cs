@@ -20,10 +20,12 @@ namespace YouthProtectionApi.Controllers
 
         [HttpPost("start")]
         [Authorize(Roles = "Voluntary")]
-        public async Task<IActionResult> StartAttendance(long publicationId, long volunteerId)
+        public async Task<IActionResult> StartAttendance(long publicationId)
         {
-            var attendance = await _attendanceService.StartAttendance(publicationId, volunteerId);
-            return Ok(attendance);
+            var userClaims = HttpContext.User;
+
+            var chatId = await _attendanceService.StartAttendance(publicationId, userClaims);
+            return Ok(new {ChatId = chatId});
         }
 
         [HttpPost("complete")]

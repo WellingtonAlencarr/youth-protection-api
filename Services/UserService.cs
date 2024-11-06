@@ -141,9 +141,11 @@ namespace YouthProtectionApi.Services
 
             return new UserModelDto
             {
+                UserId = user.UserId,
                 Email = user.Email,
                 FictionalName = user.FictionalName,
                 BirthDate = user.BirthDate,
+                CellPhone = user.CellPhone,
                 Uf = user.Uf,
                 City = user.City,
                 Role = user.Role,

@@ -30,5 +30,24 @@ namespace YouthProtectionApi.Controllers
             var messages = await _chatService.GetMessagesByChatId(chatId);
             return Ok(messages);
         }
+
+        [HttpGet("GetChatBy/{publicationId}")]
+        public async Task<IActionResult> GetChatByPublication(long publicationId)
+        {
+            try
+            {
+                var chat = await _chatService.GetChatByPublication(publicationId);
+                if (chat == null)
+                {
+                    return NotFound(new { Message = "Nenhum chat encontrado para esta publicação." });
+                }
+
+                return Ok(chat);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Erro ao buscar chat", Details = ex.Message });
+            }
+        }
     }
 }
